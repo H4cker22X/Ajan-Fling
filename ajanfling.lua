@@ -96,6 +96,7 @@ UIS.InputBegan:Connect(function(i, gpe)
 	if i.KeyCode == Enum.KeyCode.M then Main.Visible = not Main.Visible end
 end)
 
+-- Fix TextBox sizing
 local TextBox = Instance.new("TextBox")
 TextBox.Parent = Main
 TextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
@@ -116,13 +117,11 @@ Drop.Position = UDim2.new(0.05,0,0.38,0)
 Drop.Size = UDim2.new(0,400,0,60)
 Drop.CanvasSize = UDim2.new(0,0,0,0)
 Drop.ScrollBarThickness = 4
-Drop.Visible = true
-Drop.ClipsDescendants = false
+Drop.ClipsDescendants = false -- crucial fix
 
 local UIList = Instance.new("UIListLayout")
 UIList.Parent = Drop
 UIList.SortOrder = Enum.SortOrder.LayoutOrder
-
 UIList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 	Drop.CanvasSize = UDim2.new(0,0,0,UIList.AbsoluteContentSize.Y)
 end)
@@ -152,6 +151,7 @@ Players.PlayerRemoving:Connect(refreshPlayers)
 coroutine.wrap(refreshPlayers)()
 ------------- ▲▲▲ END DROPDOWN ▲▲▲ ----------------------
 
+-- Buttons (Fling, Stop, Loop)
 local TextButton = Instance.new("TextButton")
 TextButton.Parent = Main
 TextButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -182,6 +182,7 @@ StopButton.Text = "Stop Flinging"
 StopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 StopButton.TextScaled = true
 
+-- Fling logic (unchanged)
 local flinging = false
 local Thrust
 local currentTarget
