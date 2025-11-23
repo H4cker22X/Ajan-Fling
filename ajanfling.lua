@@ -45,7 +45,11 @@ Main.Draggable = true
 Main.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
 Main.BorderSizePixel = 0
 Main.Position = UDim2.new(0.3, 0, 0.3, 0)
-Main.Size = UDim2.new(0, 450, 0, 300)
+Main.Size = UDim2.new(0, 520, 0, 340)
+Main.ClipsDescendants = true
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.BackgroundTransparency = 0.05
+Main.BorderColor3 = Color3.fromRGB(50,50,50)
 
 local Top = Instance.new("Frame")
 Top.Parent = Main
