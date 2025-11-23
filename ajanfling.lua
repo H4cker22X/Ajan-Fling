@@ -1,0 +1,225 @@
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+repeat wait() until lp and lp:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
+
+-- GUI container
+local h = Instance.new("ScreenGui")
+h.Name = "h"
+pcall(function() h.Parent = game:GetService("CoreGui") end)
+if not h.Parent then h.Parent = lp:WaitForChild("PlayerGui") end
+h.ResetOnSpawn = false
+
+-- Player finder
+local function gplr(str)
+	local Found = {}
+	local strl = str:lower()
+	for _, v in pairs(Players:GetPlayers()) do
+		local uname = v.Name:lower()
+		local dname = v.DisplayName:lower()
+		if strl == "all" then
+			table.insert(Found, v)
+		elseif strl == "others" and v.Name ~= lp.Name then
+			table.insert(Found, v)
+		elseif strl == "me" and v.Name == lp.Name then
+			table.insert(Found, v)
+		elseif uname:sub(1, #strl) == strl or dname:sub(1, #strl) == strl then
+			table.insert(Found, v)
+		end
+	end
+	return Found
+end
+
+-- Notification helper
+local function notif(str, dur)
+	game:GetService("StarterGui"):SetCore("SendNotification", {
+		Title = "Ajan's Fling",
+		Text = str,
+		Icon = "rbxassetid://109251560",
+		Duration = dur or 3
+	})
+end
+
+-- Main GUI
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.Parent = h
+Main.Active = true
+Main.Draggable = true
+Main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0.3, 0, 0.3, 0)
+Main.Size = UDim2.new(0, 450, 0, 270)
+Main.ClipsDescendants = true
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.BackgroundTransparency = 0.05
+
+-- Top bar
+local Top = Instance.new("Frame")
+Top.Name = "Top"
+Top.Parent = Main
+Top.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Top.BorderSizePixel = 0
+Top.Size = UDim2.new(1, 0, 0, 40)
+
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Parent = Top
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 10, 0, 5)
+Title.Size = UDim2.new(1, -20, 0, 30)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "Ajan's Fling"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextScaled = true
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Close button
+local Close = Instance.new("TextButton")
+Close.Name = "Close"
+Close.Parent = Top
+Close.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+Close.BorderSizePixel = 0
+Close.Position = UDim2.new(1, -40, 0, 5)
+Close.Size = UDim2.new(0, 35, 0, 30)
+Close.Font = Enum.Font.GothamBold
+Close.Text = "X"
+Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+Close.TextScaled = true
+Close.MouseButton1Click:Connect(function() h:Destroy() end)
+
+-- Minimize button
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Name = "MinimizeButton"
+MinimizeButton.Parent = Main
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+MinimizeButton.BorderSizePixel = 0
+MinimizeButton.Position = UDim2.new(1, -50, 0, 5)
+MinimizeButton.Size = UDim2.new(0, 35, 0, 30)
+MinimizeButton.Font = Enum.Font.GothamBold
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.TextScaled = true
+
+local isMinimized = false
+MinimizeButton.MouseButton1Click:Connect(function()
+	isMinimized = not isMinimized
+	for _, child in pairs(Main:GetChildren()) do
+		if child ~= Top and child ~= MinimizeButton then
+			child.Visible = not isMinimized
+		end
+	end
+end)
+
+-- TextBox
+local TextBox = Instance.new("TextBox")
+TextBox.Parent = Main
+TextBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+TextBox.BorderSizePixel = 0
+TextBox.Position = UDim2.new(0.05, 0, 0.2, 0)
+TextBox.Size = UDim2.new(0, 400, 0, 50)
+TextBox.Font = Enum.Font.Gotham
+TextBox.PlaceholderText = "Fling Username/Name"
+TextBox.Text = ""
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.TextScaled = true
+TextBox.TextWrapped = true
+TextBox.ClearTextOnFocus = false
+TextBox.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Cheese em' Button
+local TextButton = Instance.new("TextButton")
+TextButton.Parent = Main
+TextButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0.075, 0, 0.45, 0)
+TextButton.Size = UDim2.new(0, 380, 0, 45)
+TextButton.Font = Enum.Font.GothamBold
+TextButton.Text = "-Fling-"
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextScaled = true
+TextButton.TextWrapped = true
+
+-- LoopFling Checkbox
+local LoopCheckbox = Instance.new("TextButton")
+LoopCheckbox.Parent = Main
+LoopCheckbox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+LoopCheckbox.BorderSizePixel = 0
+LoopCheckbox.Position = UDim2.new(0.075, 0, 0.65, 0)
+LoopCheckbox.Size = UDim2.new(0, 380, 0, 40)
+LoopCheckbox.Font = Enum.Font.Gotham
+LoopCheckbox.Text = "[ ] LoopFling"
+LoopCheckbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+LoopCheckbox.TextScaled = true
+
+-- Stop Button
+local StopButton = Instance.new("TextButton")
+StopButton.Parent = Main
+StopButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+StopButton.BorderSizePixel = 0
+StopButton.Position = UDim2.new(0.075, 0, 0.8, 0)
+StopButton.Size = UDim2.new(0, 380, 0, 40)
+StopButton.Font = Enum.Font.GothamBold
+StopButton.Text = "Stop Flinging"
+StopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+StopButton.TextScaled = true
+
+-- Fling Logic
+local flinging = false
+local Thrust
+local currentTarget
+local loopFling = false
+
+local function startFling(target)
+	if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+	if not lp.Character or not lp.Character:FindFirstChild("HumanoidRootPart") then return end
+
+	flinging = true
+	currentTarget = target
+	Thrust = Instance.new('BodyThrust')
+	Thrust.Force = Vector3.new(9999, 9999, 9999)
+	Thrust.Name = "YeetForce"
+	Thrust.Parent = lp.Character.HumanoidRootPart
+
+	coroutine.wrap(function()
+		while flinging and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and lp.Character do
+			if lp.Character:FindFirstChild("HumanoidRootPart") then
+				lp.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame
+				Thrust.Location = target.Character.HumanoidRootPart.Position
+			end
+			game:GetService("RunService").Heartbeat:Wait()
+		end
+	end)()
+end
+
+-- Button Connections
+TextButton.MouseButton1Click:Connect(function()
+	local targetList = gplr(TextBox.Text)
+	if targetList[1] then
+		startFling(targetList[1])
+	else
+		notif("Invalid player")
+	end
+end)
+
+StopButton.MouseButton1Click:Connect(function()
+	flinging = false
+	currentTarget = nil
+	if Thrust and Thrust.Parent then Thrust:Destroy() end
+	notif("Stopped flinging.")
+	local humanoid = lp.Character and lp.Character:FindFirstChildOfClass("Humanoid")
+	if humanoid then humanoid.Health = 0 end
+end)
+
+LoopCheckbox.MouseButton1Click:Connect(function()
+	loopFling = not loopFling
+	LoopCheckbox.Text = loopFling and "[✔] LoopFling" or "[ ] LoopFling"
+end)
+
+lp.CharacterAdded:Connect(function()
+	if loopFling and currentTarget then
+		wait(1.5)
+		startFling(currentTarget)
+	end
+end)
+
+notif("Loaded successfully! Created by Ajan", 5)
