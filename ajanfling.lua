@@ -1,4 +1,5 @@
 local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
 local lp = Players.LocalPlayer
 repeat wait() until lp and lp:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
 
@@ -29,12 +30,12 @@ local function gplr(str)
 	return Found
 end
 
--- Notification helper
+-- Notification helper with blue info icon
 local function notif(str, dur)
 	game:GetService("StarterGui"):SetCore("SendNotification", {
 		Title = "Ajan's Fling",
 		Text = str,
-		Icon = "rbxassetid://109251560",
+		Icon = "rbxassetid://6023426926",
 		Duration = dur or 3
 	})
 end
@@ -45,19 +46,20 @@ Main.Name = "Main"
 Main.Parent = h
 Main.Active = true
 Main.Draggable = true
-Main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Main.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
 Main.BorderSizePixel = 0
 Main.Position = UDim2.new(0.3, 0, 0.3, 0)
-Main.Size = UDim2.new(0, 450, 0, 270)
+Main.Size = UDim2.new(0, 450, 0, 280)
 Main.ClipsDescendants = true
 Main.AnchorPoint = Vector2.new(0.5, 0.5)
 Main.BackgroundTransparency = 0.05
+Main.BorderColor3 = Color3.fromRGB(50,50,50)
 
 -- Top bar
 local Top = Instance.new("Frame")
 Top.Name = "Top"
 Top.Parent = Main
-Top.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Top.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 Top.BorderSizePixel = 0
 Top.Size = UDim2.new(1, 0, 0, 40)
 
@@ -85,6 +87,8 @@ Close.Font = Enum.Font.GothamBold
 Close.Text = "X"
 Close.TextColor3 = Color3.fromRGB(255, 255, 255)
 Close.TextScaled = true
+Close.MouseEnter:Connect(function() Close.BackgroundColor3 = Color3.fromRGB(255,50,50) end)
+Close.MouseLeave:Connect(function() Close.BackgroundColor3 = Color3.fromRGB(200,0,0) end)
 Close.MouseButton1Click:Connect(function() h:Destroy() end)
 
 -- Minimize button
@@ -93,32 +97,35 @@ MinimizeButton.Name = "MinimizeButton"
 MinimizeButton.Parent = Main
 MinimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 MinimizeButton.BorderSizePixel = 0
-MinimizeButton.Position = UDim2.new(1, -50, 0, 5)
+MinimizeButton.Position = UDim2.new(1, -90, 0, 5)
 MinimizeButton.Size = UDim2.new(0, 35, 0, 30)
 MinimizeButton.Font = Enum.Font.GothamBold
 MinimizeButton.Text = "-"
 MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 MinimizeButton.TextScaled = true
 
-local isMinimized = false
+-- Minimize just hides the frame (not destroyed)
 MinimizeButton.MouseButton1Click:Connect(function()
-	isMinimized = not isMinimized
-	for _, child in pairs(Main:GetChildren()) do
-		if child ~= Top and child ~= MinimizeButton then
-			child.Visible = not isMinimized
-		end
+	Main.Visible = false
+end)
+
+-- Toggle GUI with "M" key
+UIS.InputBegan:Connect(function(input, gpe)
+	if gpe then return end
+	if input.KeyCode == Enum.KeyCode.M then
+		Main.Visible = not Main.Visible
 	end
 end)
 
 -- TextBox
 local TextBox = Instance.new("TextBox")
 TextBox.Parent = Main
-TextBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+TextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 TextBox.BorderSizePixel = 0
 TextBox.Position = UDim2.new(0.05, 0, 0.2, 0)
 TextBox.Size = UDim2.new(0, 400, 0, 50)
 TextBox.Font = Enum.Font.Gotham
-TextBox.PlaceholderText = "Fling Username/Name"
+TextBox.PlaceholderText = "/Fling Username/Name"
 TextBox.Text = ""
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextScaled = true
@@ -126,42 +133,50 @@ TextBox.TextWrapped = true
 TextBox.ClearTextOnFocus = false
 TextBox.TextXAlignment = Enum.TextXAlignment.Left
 
--- Cheese em' Button
+-- Fling Button
 local TextButton = Instance.new("TextButton")
 TextButton.Parent = Main
-TextButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+TextButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 TextButton.BorderSizePixel = 0
 TextButton.Position = UDim2.new(0.075, 0, 0.45, 0)
-TextButton.Size = UDim2.new(0, 380, 0, 45)
+TextButton.Size = UDim2.new(0, 380, 0, 50)
 TextButton.Font = Enum.Font.GothamBold
 TextButton.Text = "-Fling-"
 TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextButton.TextScaled = true
 TextButton.TextWrapped = true
+TextButton.MouseEnter:Connect(function() TextButton.BackgroundColor3 = Color3.fromRGB(85,85,85) end)
+TextButton.MouseLeave:Connect(function() TextButton.BackgroundColor3 = Color3.fromRGB(60,60,60) end)
 
 -- LoopFling Checkbox
 local LoopCheckbox = Instance.new("TextButton")
 LoopCheckbox.Parent = Main
-LoopCheckbox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+LoopCheckbox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 LoopCheckbox.BorderSizePixel = 0
 LoopCheckbox.Position = UDim2.new(0.075, 0, 0.65, 0)
-LoopCheckbox.Size = UDim2.new(0, 380, 0, 40)
+LoopCheckbox.Size = UDim2.new(0, 380, 0, 45)
 LoopCheckbox.Font = Enum.Font.Gotham
 LoopCheckbox.Text = "[ ] LoopFling"
 LoopCheckbox.TextColor3 = Color3.fromRGB(255, 255, 255)
 LoopCheckbox.TextScaled = true
+LoopCheckbox.TextWrapped = true
+LoopCheckbox.MouseEnter:Connect(function() LoopCheckbox.BackgroundColor3 = Color3.fromRGB(75,75,75) end)
+LoopCheckbox.MouseLeave:Connect(function() LoopCheckbox.BackgroundColor3 = Color3.fromRGB(50,50,50) end)
 
 -- Stop Button
 local StopButton = Instance.new("TextButton")
 StopButton.Parent = Main
-StopButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+StopButton.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
 StopButton.BorderSizePixel = 0
 StopButton.Position = UDim2.new(0.075, 0, 0.8, 0)
-StopButton.Size = UDim2.new(0, 380, 0, 40)
+StopButton.Size = UDim2.new(0, 380, 0, 50)
 StopButton.Font = Enum.Font.GothamBold
 StopButton.Text = "Stop Flinging"
 StopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 StopButton.TextScaled = true
+StopButton.TextWrapped = true
+StopButton.MouseEnter:Connect(function() StopButton.BackgroundColor3 = Color3.fromRGB(220,0,0) end)
+StopButton.MouseLeave:Connect(function() StopButton.BackgroundColor3 = Color3.fromRGB(180,0,0) end)
 
 -- Fling Logic
 local flinging = false
@@ -191,7 +206,7 @@ local function startFling(target)
 	end)()
 end
 
--- Button Connections
+-- Button connections
 TextButton.MouseButton1Click:Connect(function()
 	local targetList = gplr(TextBox.Text)
 	if targetList[1] then
