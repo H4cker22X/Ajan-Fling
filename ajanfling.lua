@@ -100,7 +100,7 @@ local TextBox = Instance.new("TextBox")
 TextBox.Parent = Main
 TextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 TextBox.Position = UDim2.new(0.05, 0, 0.2, 0)
-TextButton.Size = UDim2.new(0, 440, 0, 60)
+TextBox.Size = UDim2.new(0, 440, 0, 60)
 TextBox.Font = Enum.Font.Gotham
 TextBox.PlaceholderText = "Fling Username/Name"
 TextBox.Text = ""
@@ -117,10 +117,15 @@ Drop.Size = UDim2.new(0,400,0,60)
 Drop.CanvasSize = UDim2.new(0,0,0,0)
 Drop.ScrollBarThickness = 4
 Drop.Visible = true
+Drop.ClipsDescendants = false
 
 local UIList = Instance.new("UIListLayout")
 UIList.Parent = Drop
 UIList.SortOrder = Enum.SortOrder.LayoutOrder
+
+UIList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	Drop.CanvasSize = UDim2.new(0,0,0,UIList.AbsoluteContentSize.Y)
+end)
 
 local function refreshPlayers()
 	for _,v in pairs(Drop:GetChildren()) do
@@ -140,8 +145,6 @@ local function refreshPlayers()
 			TextBox.Text = v.Name
 		end)
 	end
-	wait()
-	Drop.CanvasSize = UDim2.new(0,0,0,UIList.AbsoluteContentSize.Y)
 end
 
 Players.PlayerAdded:Connect(refreshPlayers)
