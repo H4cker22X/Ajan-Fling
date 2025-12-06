@@ -192,7 +192,7 @@ local function startFling(target)
     local thrusts = {}
     for i = 1, 30 do
         local thrust = Instance.new('BodyThrust')
-        thrust.Force = Vector3.new(1e10, 1e10, 1e10)
+        thrust.Force = Vector3.new(1e5, 1e5, 1e5)
         thrust.Name = "YeetForce" .. i
         thrust.Parent = hrp
         table.insert(thrusts, thrust)
@@ -200,7 +200,7 @@ local function startFling(target)
     
     -- Add BodyVelocity
     local velocity = Instance.new('BodyVelocity')
-    velocity.Velocity = Vector3.new(1e9, 1e9, 1e9)
+    velocity.Velocity = Vector3.new(1e5, 1e5, 1e5)
     velocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
     velocity.Parent = hrp
     
