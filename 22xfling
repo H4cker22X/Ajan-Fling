@@ -187,24 +187,25 @@ local function startFling(target)
     currentTarget = target
     local hrp = lp.Character.HumanoidRootPart
     local targetHrp = target.Character.HumanoidRootPart
+    local humanoid = lp.Character.Humanoid
     
-    -- Create maximum thrusts
+    -- Create maximum thrusts for extreme force
     local thrusts = {}
     for i = 1, 30 do
         local thrust = Instance.new('BodyThrust')
-        thrust.Force = Vector3.new(1e5, 1e5, 1e5)
+        thrust.Force = Vector3.new(1e10, 1e10, 1e10)
         thrust.Name = "YeetForce" .. i
         thrust.Parent = hrp
         table.insert(thrusts, thrust)
     end
     
-    -- Add BodyVelocity
+    -- Create BodyVelocity for constant force
     local velocity = Instance.new('BodyVelocity')
-    velocity.Velocity = Vector3.new(1e5, 1e5, 1e5)
+    velocity.Velocity = Vector3.new(0, 0, 0)
     velocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
     velocity.Parent = hrp
     
-    -- Add BodyAngularVelocity for spinning
+    -- Create BodyAngularVelocity for spinning chaos
     local angularVelocity = Instance.new('BodyAngularVelocity')
     angularVelocity.AngularVelocity = Vector3.new(1e6, 1e6, 1e6)
     angularVelocity.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
@@ -214,28 +215,40 @@ local function startFling(target)
         local angle = 0
         while flinging and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and lp.Character do
             if hrp and targetHrp then
-                -- Microscopic teleportation - practically inside the target
-                angle = angle + 99 -- Very fast rotation
-                local radius = 0.1 
+                -- The walkfling core: Simulate walking while teleporting
+                angle = angle + 5 -- Extremely fast rotation
+                local radius = 0.001 -- Practically touching
+                
+                -- Calculate microscopic offset
                 local offsetX = math.cos(angle) * radius
                 local offsetZ = math.sin(angle) * radius
-                local offsetY = math.sin(angle * 8) * 0.001 -- Tiny vertical movement
+                local offsetY = math.sin(angle * 10) * 0.001
                 
-                -- Teleport virtually inside the target
+                -- KEY: Set position to target's position (walkfling logic)
                 hrp.CFrame = CFrame.new(targetHrp.Position + Vector3.new(offsetX, offsetY, offsetZ))
                 
-                -- Apply maximum force
+                -- Simulate walking state (this is what makes walkfling work)
+                humanoid:Move(Vector3.new(0, 0, -1))
+                
+                -- Apply maximum force at target location
                 for i, thrust in ipairs(thrusts) do
                     thrust.Location = targetHrp.Position
                 end
                 
-                -- Update velocity
-                velocity.Velocity = (targetHrp.Position - hrp.Position).Unit * 1e9
+                -- Set velocity to push target away while walking
+                velocity.Velocity = Vector3.new(
+                    math.random(-1e9, 1e9),
+                    1e9, -- Always strong upward force
+                    math.random(-1e9, 1e9)
+                )
+                
+                -- Change humanoid state to walking (crucial for walkfling)
+                humanoid:ChangeState(Enum.HumanoidStateType.Running)
             end
             game:GetService("RunService").Heartbeat:Wait()
         end
         
-        -- Cleanup
+        -- Cleanup all forces
         for _, thrust in ipairs(thrusts) do
             if thrust then thrust:Destroy() end
         end
