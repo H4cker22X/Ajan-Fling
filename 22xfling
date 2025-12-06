@@ -193,47 +193,52 @@ local function startFling(target)
     local hrp = lp.Character.HumanoidRootPart
     local targetHrp = target.Character.HumanoidRootPart
     
-    -- Create multiple thrusts for better fling effect
+    -- Create maximum number of thrusts for ultimate power
     local thrusts = {}
-    for i = 1, 8 do
+    for i = 1, 20 do
         local thrust = Instance.new('BodyThrust')
-        thrust.Force = Vector3.new(5e7, 5e7, 5e7)
+        thrust.Force = Vector3.new(1e9, 1e9, 1e9) -- 100,000x more powerful
         thrust.Name = "YeetForce" .. i
         thrust.Parent = hrp
         table.insert(thrusts, thrust)
     end
     
+    -- Add a BodyVelocity for additional force
+    local velocity = Instance.new('BodyVelocity')
+    velocity.Velocity = Vector3.new(1e8, 1e8, 1e8)
+    velocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    velocity.Parent = hrp
+    
     coroutine.wrap(function()
         local angle = 0
         while flinging and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and lp.Character do
             if hrp and targetHrp then
-                -- Calculate circular position around target
-                angle = angle + 0.3
-                local radius = 3
+                -- Calculate very tight circular position around target (close contact)
+                angle = angle + 1.5 -- Faster rotation
+                local radius = 0.1 -- Extremely close to target
                 local offsetX = math.cos(angle) * radius
                 local offsetZ = math.sin(angle) * radius
-                local offsetY = math.sin(angle * 2) * 2
+                local offsetY = math.sin(angle * 4) * 0.05 -- Minimal vertical movement
                 
-                -- Teleport to calculated position
+                -- Teleport directly on target with microscopic offset
                 hrp.CFrame = CFrame.new(targetHrp.Position + Vector3.new(offsetX, offsetY, offsetZ))
                 
-                -- Apply thrusts in different directions
+                -- Apply insane force directly at target
                 for i, thrust in ipairs(thrusts) do
-                    local direction = (targetHrp.Position - hrp.Position).Unit
-                    thrust.Location = targetHrp.Position + Vector3.new(
-                        math.random(-5, 5),
-                        math.random(-5, 5),
-                        math.random(-5, 5)
-                    )
+                    thrust.Location = targetHrp.Position
                 end
+                
+                -- Update velocity to push toward target
+                velocity.Velocity = (targetHrp.Position - hrp.Position).Unit * 1e8
             end
             game:GetService("RunService").Heartbeat:Wait()
         end
         
-        -- Cleanup thrusts
+        -- Cleanup all forces
         for _, thrust in ipairs(thrusts) do
             if thrust then thrust:Destroy() end
         end
+        if velocity then velocity:Destroy() end
     end)()
 end
 
