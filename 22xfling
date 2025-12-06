@@ -191,7 +191,7 @@ local function startFling(target)
 	flinging = true
 	currentTarget = target
 	Thrust = Instance.new('BodyThrust')
-	Thrust.Force = Vector3.new(999999999, 999999999, 999999999)
+	Thrust.Force = Vector3.new(1e7, 1e7, 1e7)
 	Thrust.Name = "YeetForce"
 	Thrust.Parent = lp.Character.HumanoidRootPart
 
