@@ -33,7 +33,7 @@ end
 -- Notification helper with blue info icon
 local function notif(str, dur)
 	game:GetService("StarterGui"):SetCore("SendNotification", {
-		Title = "Ajan's Fling",
+		Title = "22X Fling",
 		Text = str,
 		Icon = "rbxassetid://6023426926",
 		Duration = dur or 3
@@ -70,7 +70,7 @@ Title.BackgroundTransparency = 1
 Title.Position = UDim2.new(0, 10, 0, 5)
 Title.Size = UDim2.new(1, -20, 0, 30)
 Title.Font = Enum.Font.GothamBold
-Title.Text = "Ajan's Fling"
+Title.Text = "22X Fling"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextScaled = true
 Title.TextXAlignment = Enum.TextXAlignment.Left
@@ -125,7 +125,7 @@ TextBox.BorderSizePixel = 0
 TextBox.Position = UDim2.new(0.05, 0, 0.2, 0)
 TextBox.Size = UDim2.new(0, 400, 0, 50)
 TextBox.Font = Enum.Font.Gotham
-TextBox.PlaceholderText = "/Fling Username/Name"
+TextBox.PlaceholderText = "Username/Name"
 TextBox.Text = ""
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextScaled = true
@@ -141,7 +141,7 @@ TextButton.BorderSizePixel = 0
 TextButton.Position = UDim2.new(0.075, 0, 0.45, 0)
 TextButton.Size = UDim2.new(0, 380, 0, 50)
 TextButton.Font = Enum.Font.GothamBold
-TextButton.Text = "-Fling-"
+TextButton.Text = "Fling"
 TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextButton.TextScaled = true
 TextButton.TextWrapped = true
@@ -191,7 +191,7 @@ local function startFling(target)
 	flinging = true
 	currentTarget = target
 	Thrust = Instance.new('BodyThrust')
-	Thrust.Force = Vector3.new(9999, 9999, 9999)
+	Thrust.Force = Vector3.new(999999999, 999999999, 999999999)
 	Thrust.Name = "YeetForce"
 	Thrust.Parent = lp.Character.HumanoidRootPart
 
@@ -237,4 +237,4 @@ lp.CharacterAdded:Connect(function()
 	end
 end)
 
-notif("Loaded successfully! Created by Ajan", 5)
+notif("Loaded successfully! Created by H4cker_22X", 5)
