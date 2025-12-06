@@ -179,11 +179,6 @@ StopButton.MouseEnter:Connect(function() StopButton.BackgroundColor3 = Color3.fr
 StopButton.MouseLeave:Connect(function() StopButton.BackgroundColor3 = Color3.fromRGB(180,0,0) end)
 
 -- Fling Logic
-local flinging = false
-local Thrust
-local currentTarget
-local loopFling = false
-
 local function startFling(target)
     if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
     if not lp.Character or not lp.Character:FindFirstChild("HumanoidRootPart") then return end
@@ -193,55 +188,61 @@ local function startFling(target)
     local hrp = lp.Character.HumanoidRootPart
     local targetHrp = target.Character.HumanoidRootPart
     
-    -- Create maximum number of thrusts for ultimate power
+    -- Create maximum thrusts
     local thrusts = {}
-    for i = 1, 20 do
+    for i = 1, 30 do
         local thrust = Instance.new('BodyThrust')
-        thrust.Force = Vector3.new(1e9, 1e9, 1e9) -- 100,000x more powerful
+        thrust.Force = Vector3.new(1e10, 1e10, 1e10)
         thrust.Name = "YeetForce" .. i
         thrust.Parent = hrp
         table.insert(thrusts, thrust)
     end
     
-    -- Add a BodyVelocity for additional force
+    -- Add BodyVelocity
     local velocity = Instance.new('BodyVelocity')
-    velocity.Velocity = Vector3.new(1e8, 1e8, 1e8)
+    velocity.Velocity = Vector3.new(1e9, 1e9, 1e9)
     velocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
     velocity.Parent = hrp
+    
+    -- Add BodyAngularVelocity for spinning
+    local angularVelocity = Instance.new('BodyAngularVelocity')
+    angularVelocity.AngularVelocity = Vector3.new(1e6, 1e6, 1e6)
+    angularVelocity.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+    angularVelocity.Parent = hrp
     
     coroutine.wrap(function()
         local angle = 0
         while flinging and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and lp.Character do
             if hrp and targetHrp then
-                -- Calculate very tight circular position around target (close contact)
-                angle = angle + 1.5 -- Faster rotation
-                local radius = 0.1 -- Extremely close to target
+                -- Microscopic teleportation - practically inside the target
+                angle = angle + 3 -- Very fast rotation
+                local radius = 0.001 -- Extremely close (1/1000th of a stud)
                 local offsetX = math.cos(angle) * radius
                 local offsetZ = math.sin(angle) * radius
-                local offsetY = math.sin(angle * 4) * 0.05 -- Minimal vertical movement
+                local offsetY = math.sin(angle * 8) * 0.001 -- Tiny vertical movement
                 
-                -- Teleport directly on target with microscopic offset
+                -- Teleport virtually inside the target
                 hrp.CFrame = CFrame.new(targetHrp.Position + Vector3.new(offsetX, offsetY, offsetZ))
                 
-                -- Apply insane force directly at target
+                -- Apply maximum force
                 for i, thrust in ipairs(thrusts) do
                     thrust.Location = targetHrp.Position
                 end
                 
-                -- Update velocity to push toward target
-                velocity.Velocity = (targetHrp.Position - hrp.Position).Unit * 1e8
+                -- Update velocity
+                velocity.Velocity = (targetHrp.Position - hrp.Position).Unit * 1e9
             end
             game:GetService("RunService").Heartbeat:Wait()
         end
         
-        -- Cleanup all forces
+        -- Cleanup
         for _, thrust in ipairs(thrusts) do
             if thrust then thrust:Destroy() end
         end
         if velocity then velocity:Destroy() end
+        if angularVelocity then angularVelocity:Destroy() end
     end)()
 end
-
 -- Button connections
 TextButton.MouseButton1Click:Connect(function()
 	local targetList = gplr(TextBox.Text)
