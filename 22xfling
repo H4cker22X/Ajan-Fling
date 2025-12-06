@@ -185,25 +185,56 @@ local currentTarget
 local loopFling = false
 
 local function startFling(target)
-	if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
-	if not lp.Character or not lp.Character:FindFirstChild("HumanoidRootPart") then return end
-
-	flinging = true
-	currentTarget = target
-	Thrust = Instance.new('BodyThrust')
-	Thrust.Force = Vector3.new(1e7, 1e7, 1e7)
-	Thrust.Name = "YeetForce"
-	Thrust.Parent = lp.Character.HumanoidRootPart
-
-	coroutine.wrap(function()
-		while flinging and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and lp.Character do
-			if lp.Character:FindFirstChild("HumanoidRootPart") then
-				lp.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame
-				Thrust.Location = target.Character.HumanoidRootPart.Position
-			end
-			game:GetService("RunService").Heartbeat:Wait()
-		end
-	end)()
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+    if not lp.Character or not lp.Character:FindFirstChild("HumanoidRootPart") then return end
+    
+    flinging = true
+    currentTarget = target
+    local hrp = lp.Character.HumanoidRootPart
+    local targetHrp = target.Character.HumanoidRootPart
+    
+    -- Create multiple thrusts for better fling effect
+    local thrusts = {}
+    for i = 1, 8 do
+        local thrust = Instance.new('BodyThrust')
+        thrust.Force = Vector3.new(5e7, 5e7, 5e7)
+        thrust.Name = "YeetForce" .. i
+        thrust.Parent = hrp
+        table.insert(thrusts, thrust)
+    end
+    
+    coroutine.wrap(function()
+        local angle = 0
+        while flinging and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and lp.Character do
+            if hrp and targetHrp then
+                -- Calculate circular position around target
+                angle = angle + 0.3
+                local radius = 3
+                local offsetX = math.cos(angle) * radius
+                local offsetZ = math.sin(angle) * radius
+                local offsetY = math.sin(angle * 2) * 2
+                
+                -- Teleport to calculated position
+                hrp.CFrame = CFrame.new(targetHrp.Position + Vector3.new(offsetX, offsetY, offsetZ))
+                
+                -- Apply thrusts in different directions
+                for i, thrust in ipairs(thrusts) do
+                    local direction = (targetHrp.Position - hrp.Position).Unit
+                    thrust.Location = targetHrp.Position + Vector3.new(
+                        math.random(-5, 5),
+                        math.random(-5, 5),
+                        math.random(-5, 5)
+                    )
+                end
+            end
+            game:GetService("RunService").Heartbeat:Wait()
+        end
+        
+        -- Cleanup thrusts
+        for _, thrust in ipairs(thrusts) do
+            if thrust then thrust:Destroy() end
+        end
+    end)()
 end
 
 -- Button connections
